@@ -17,6 +17,7 @@ if (!file.exists("data")) {
 unzip("./activity.zip", exdir = "./data")
 activity <-read.csv("./data/activity.csv")
 ```
+
 2. Process/transform the data (if necessary) into a format suitable for the analysis
 ```{r}
 library(lubridate)
@@ -29,9 +30,10 @@ activity$date <- ymd(activity$date)
 For this part of the assignment, ignore the missing values in the dataset.
 
 1. Histogram of the total number of steps taken each day
-```{r}
+```{r assign_hist_1}
 with (activity, qplot(date, steps, geom = "col"))
 ```
+
 2. Calculate and report the mean and median total number of steps taken per day
 ```{r}
 mean(with(activity, tapply(steps, date, sum, na.rm = TRUE)))
@@ -45,8 +47,11 @@ activitymean_byinterval <- activity %>%
   group_by(interval) %>%
   summarise(steps=mean(steps,na.rm = TRUE)) %>%
   ungroup()
+```
+```{r assign_plot_1}
 with (activitymean_byinterval, qplot(interval, steps, geom="line"))
 ```
+
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 ```{r}
 as.numeric(activitymean_byinterval[max(activitymean_byinterval$steps),1])
@@ -57,6 +62,7 @@ as.numeric(activitymean_byinterval[max(activitymean_byinterval$steps),1])
 ```{r}
 sapply(activity, function(x) sum(is.na(x)))
 ```
+
 2. Strategy for filling in all of the missing values in the dataset: use the mean for that 5-minute interval.
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 ```{r}
@@ -67,8 +73,10 @@ activity_imputation <- activity %>%
 ```
 
 4. Histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r}
+```{r assign_hist_2}
 with (activity_imputation, qplot(date, steps_imputed, geom = "col"))
+```
+```{r}
 mean(with(activity_imputation, tapply(steps_imputed, date, sum, na.rm = TRUE)))
 median(with(activity_imputation, tapply(steps_imputed, date, sum, na.rm = TRUE)))
 ```
@@ -84,11 +92,13 @@ activity_imputation <- activity_imputation %>%
 ```
 
 2. panel plot a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
-```{r}
+```{r assign_plot_2}
 activityimputedmean_byinterval <- activity_imputation %>%
   group_by(interval, weekend) %>%
   summarise(steps_imputed=mean(steps_imputed)) %>%
   ungroup()
 with (activitymean_byinterval, qplot(interval, steps, geom="line"))
+```
+```{r assign_plot_3}
 ggplot(activityimputedmean_byinterval, aes(interval,steps_imputed)) + geom_line() + facet_grid(weekend ~.) + ylab("Number of steps")
 ```

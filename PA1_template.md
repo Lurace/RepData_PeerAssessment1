@@ -19,6 +19,7 @@ if (!file.exists("data")) {
 unzip("./activity.zip", exdir = "./data")
 activity <-read.csv("./data/activity.csv")
 ```
+
 2. Process/transform the data (if necessary) into a format suitable for the analysis
 
 ```r
@@ -37,7 +38,8 @@ For this part of the assignment, ignore the missing values in the dataset.
 with (activity, qplot(date, steps, geom = "col"))
 ```
 
-![](assign1_figs/unnamed-chunk-3-1.png)<!-- -->
+![](assign1_figs/assign_hist_1-1.png)<!-- -->
+
 2. Calculate and report the mean and median total number of steps taken per day
 
 ```r
@@ -64,10 +66,14 @@ activitymean_byinterval <- activity %>%
   group_by(interval) %>%
   summarise(steps=mean(steps,na.rm = TRUE)) %>%
   ungroup()
+```
+
+```r
 with (activitymean_byinterval, qplot(interval, steps, geom="line"))
 ```
 
-![](assign1_figs/unnamed-chunk-5-1.png)<!-- -->
+![](assign1_figs/assign_plot_1-1.png)<!-- -->
+
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 ```r
@@ -89,6 +95,7 @@ sapply(activity, function(x) sum(is.na(x)))
 ##    steps     date interval 
 ##     2304        0        0
 ```
+
 2. Strategy for filling in all of the missing values in the dataset: use the mean for that 5-minute interval.
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
@@ -105,7 +112,7 @@ activity_imputation <- activity %>%
 with (activity_imputation, qplot(date, steps_imputed, geom = "col"))
 ```
 
-![](assign1_figs/unnamed-chunk-9-1.png)<!-- -->
+![](assign1_figs/assign_hist_2-1.png)<!-- -->
 
 ```r
 mean(with(activity_imputation, tapply(steps_imputed, date, sum, na.rm = TRUE)))
@@ -144,10 +151,10 @@ activityimputedmean_byinterval <- activity_imputation %>%
 with (activitymean_byinterval, qplot(interval, steps, geom="line"))
 ```
 
-![](assign1_figs/unnamed-chunk-11-1.png)<!-- -->
+![](assign1_figs/assign_plot_2-1.png)<!-- -->
 
 ```r
 ggplot(activityimputedmean_byinterval, aes(interval,steps_imputed)) + geom_line() + facet_grid(weekend ~.) + ylab("Number of steps")
 ```
 
-![](assign1_figs/unnamed-chunk-11-2.png)<!-- -->
+![](assign1_figs/assign_plot_3-1.png)<!-- -->
